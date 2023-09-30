@@ -8,6 +8,12 @@ app.use(bodyParser.json());
 app.use(cors());
 
 let fileCounter = 1;
+const folderPath = 'livestreaming';
+
+// Create the folder if it doesn't exist
+if (!fs.existsSync(folderPath)) {
+  fs.mkdirSync(folderPath);
+}
 
 app.post('/', (req, res) => {
   const { channelName } = req.body;
@@ -20,7 +26,7 @@ app.post('/', (req, res) => {
     }
   };
 
-  const fileName = `livestreaming/userlive${fileCounter}.json`;
+  const fileName = `${folderPath}/userlive${fileCounter}.json`;
 
   fs.writeFile(fileName, JSON.stringify(logData, null, 2), (err) => {
     if (err) {
@@ -37,7 +43,7 @@ app.post('/', (req, res) => {
 
 app.get('/:fileNumber', (req, res) => {
   const fileNumber = req.params.fileNumber;
-  const fileName = `livestreaming/userlive${fileNumber}.json`;
+  const fileName = `${folderPath}/userlive${fileNumber}.json`;
 
   fs.readFile(path.resolve(__dirname, fileName), 'utf8', (err, data) => {
     if (err) {
